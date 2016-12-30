@@ -215,7 +215,7 @@
             float height = CGRectGetHeight(_titleLabel.frame) + _alignPadding + _imageSize.height;
             _imageView.frame = CGRectMake((rect.size.width - _imageSize.width)/2,(rect.size.height - height)/2,_imageSize.width, _imageSize.height);
             _titleLabel.frame = CGRectMake((rect.size.width - CGRectGetWidth(_titleLabel.frame))/2, CGRectGetMaxY(_imageView.frame) + _alignPadding, CGRectGetWidth(_titleLabel.frame) , CGRectGetHeight(_titleLabel.frame));
-            badgeX = CGRectGetMaxX(_imageView.frame) > CGRectGetMaxX(_titleLabel.frame) ? (CGRectGetMaxX(_imageView.frame) - _badgeRadius * 4):(CGRectGetMaxX(_titleLabel.frame)-_badgeRadius);
+            badgeX = CGRectGetWidth(_imageView.frame) > 0 ? (CGRectGetMaxX(_imageView.frame) - _badgeRadius * 4):(CGRectGetMaxX(_titleLabel.frame)-_badgeRadius);
             badgeY = CGRectGetMinY(_titleLabel.frame) < CGRectGetMinY(_imageView.frame) ? CGRectGetMinY(_titleLabel.frame) : CGRectGetMinY(_imageView.frame);
             break;
         }
