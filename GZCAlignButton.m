@@ -188,29 +188,35 @@
     if (_title == nil || _title.length == 0) {
         _alignPadding = 0;
     }
+    float badgeX = 0;
+    float badgeY = 0;
+    //计算位置
     switch (_textAligment) {
         case GZCAlignButtonAlignmentLeft:
         {
             float width = CGRectGetWidth(_titleLabel.frame) + _alignPadding + _imageSize.width;
             _imageView.frame = CGRectMake((rect.size.width - width)/2,(rect.size.height - _imageSize.height)/2,_imageSize.width, _imageSize.height);
-            _titleLabel.frame = CGRectMake(CGRectGetMaxX(_imageView.frame) + _alignPadding, 0, CGRectGetWidth(_titleLabel.frame), rect.size.height);
-            _badgeLabel.frame = CGRectMake(CGRectGetMaxX(_titleLabel.frame) - CGRectGetWidth(_badgeLabel.frame), CGRectGetMinY(_imageView.frame), CGRectGetWidth(_badgeLabel.frame), CGRectGetHeight(_badgeLabel.frame));
+            _titleLabel.frame = CGRectMake(CGRectGetMaxX(_imageView.frame) + _alignPadding,(rect.size.height - CGRectGetHeight(_titleLabel.frame))/2, CGRectGetWidth(_titleLabel.frame), CGRectGetHeight(_titleLabel.frame));
+            badgeX = CGRectGetMaxX(_imageView.frame) > CGRectGetMaxX(_titleLabel.frame) ? (CGRectGetMaxX(_imageView.frame) - _badgeRadius * 4):(CGRectGetMaxX(_titleLabel.frame)-_badgeRadius);
+            badgeY = CGRectGetMinY(_imageView.frame) < CGRectGetMinY(_titleLabel.frame) ? (CGRectGetMinY(_imageView.frame)):(CGRectGetMinY(_titleLabel.frame));
             break;
         }
         case GZCAlignButtonAlignmentRight:
         {
             float width = CGRectGetWidth(_titleLabel.frame) + _alignPadding + _imageSize.width;
-            _titleLabel.frame = CGRectMake((rect.size.width - width)/2, 0, CGRectGetWidth(_titleLabel.frame), rect.size.height);
+            _titleLabel.frame = CGRectMake((rect.size.width - width)/2, (rect.size.height - CGRectGetHeight(_titleLabel.frame))/2, CGRectGetWidth(_titleLabel.frame), CGRectGetHeight(_titleLabel.frame));
             _imageView.frame = CGRectMake(CGRectGetMaxX(_titleLabel.frame) + _alignPadding, (rect.size.height - _imageSize.height)/2, _imageSize.width, _imageSize.height);
-            _badgeLabel.frame = CGRectMake(CGRectGetMaxX(_imageView.frame) - CGRectGetWidth(_badgeLabel.frame), CGRectGetMinY(_imageView.frame), CGRectGetWidth(_badgeLabel.frame), CGRectGetHeight(_badgeLabel.frame));
+            badgeX = CGRectGetMaxX(_imageView.frame) > CGRectGetMaxX(_titleLabel.frame) ? (CGRectGetMaxX(_imageView.frame) - _badgeRadius * 4):(CGRectGetMaxX(_titleLabel.frame)-_badgeRadius);
+            badgeY = _imageSize.height > CGRectGetHeight(_titleLabel.frame) ? CGRectGetMinY(_imageView.frame) : CGRectGetMinY(_titleLabel.frame);
             break;
         }
         case GZCAlignButtonAlignmentTop:
         {
             float height = CGRectGetHeight(_titleLabel.frame) + _alignPadding + _imageSize.height;
             _imageView.frame = CGRectMake((rect.size.width - _imageSize.width)/2,(rect.size.height - height)/2,_imageSize.width, _imageSize.height);
-            _titleLabel.frame = CGRectMake(0, CGRectGetMaxY(_imageView.frame) + _alignPadding, rect.size.width , CGRectGetHeight(_titleLabel.frame));
-            _badgeLabel.frame = CGRectMake(CGRectGetMaxX(_imageView.frame) - _badgeRadius * 4, CGRectGetMinY(_imageView.frame), CGRectGetWidth(_badgeLabel.frame), CGRectGetHeight(_badgeLabel.frame));
+            _titleLabel.frame = CGRectMake((rect.size.width - CGRectGetWidth(_titleLabel.frame))/2, CGRectGetMaxY(_imageView.frame) + _alignPadding, CGRectGetWidth(_titleLabel.frame) , CGRectGetHeight(_titleLabel.frame));
+            badgeX = CGRectGetMaxX(_imageView.frame) > CGRectGetMaxX(_titleLabel.frame) ? (CGRectGetMaxX(_imageView.frame) - _badgeRadius * 4):(CGRectGetMaxX(_titleLabel.frame)-_badgeRadius);
+            badgeY = CGRectGetMinY(_titleLabel.frame) < CGRectGetMinY(_imageView.frame) ? CGRectGetMinY(_titleLabel.frame) : CGRectGetMinY(_imageView.frame);
             break;
         }
         case GZCAlignButtonAlignmentBottom:
@@ -218,23 +224,22 @@
             float height = CGRectGetHeight(_titleLabel.frame) + _alignPadding + _imageSize.height;
             _titleLabel.frame = CGRectMake((rect.size.width - CGRectGetWidth(_titleLabel.frame))/2, (rect.size.height - height)/2, CGRectGetWidth(_titleLabel.frame), CGRectGetHeight(_titleLabel.frame));
             _imageView.frame = CGRectMake((rect.size.width - _imageSize.width)/2, CGRectGetMaxY(_titleLabel.frame) + _alignPadding , _imageSize.width, _imageSize.height);
-            if (CGRectGetWidth(_titleLabel.frame)) {
-                _badgeLabel.frame = CGRectMake(CGRectGetMaxX(_titleLabel.frame), CGRectGetMinY(_titleLabel.frame), CGRectGetWidth(_badgeLabel.frame), CGRectGetHeight(_badgeLabel.frame));
-            }else{
-                _badgeLabel.frame = CGRectMake(CGRectGetMaxX(_imageView.frame) - CGRectGetWidth(_badgeLabel.frame), CGRectGetMinY(_imageView.frame), CGRectGetWidth(_badgeLabel.frame), CGRectGetHeight(_badgeLabel.frame));
-            }
+            badgeX = CGRectGetWidth(_titleLabel.frame) > 0 ? (CGRectGetMaxX(_titleLabel.frame)-_badgeRadius):(CGRectGetMaxX(_imageView.frame) - _badgeRadius * 4);
+            badgeY = CGRectGetMinY(_imageView.frame) < CGRectGetMinY(_titleLabel.frame) ? (CGRectGetMinY(_imageView.frame)):(CGRectGetMinY(_titleLabel.frame));
             break;
         }
         case GZCAlignButtonAlignmentBelow:
         {
             _imageView.frame = CGRectMake((rect.size.width - _imageSize.width)/2 ,(rect.size.height - _imageSize.height)/2 , _imageSize.width, _imageSize.height);
             _titleLabel.frame = _imageView.frame;
-            _badgeLabel.frame = CGRectMake(CGRectGetMaxX(_imageView.frame) - CGRectGetWidth(_badgeLabel.frame), CGRectGetMinY(_imageView.frame), CGRectGetWidth(_badgeLabel.frame), CGRectGetHeight(_badgeLabel.frame));
+            badgeX = CGRectGetMaxX(_imageView.frame) - _badgeRadius * 4;
+            badgeY = CGRectGetMinY(_imageView.frame);
             _titleLabel.backgroundColor = _shadowColor;
             _titleLabel.clipsToBounds = YES;
             break;
         }
     }
+    _badgeLabel.frame = CGRectMake(badgeX, badgeY, CGRectGetWidth(_badgeLabel.frame), CGRectGetHeight(_badgeLabel.frame));
 }
 
 -(void)layoutBadgeView{
