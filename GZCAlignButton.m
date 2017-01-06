@@ -7,6 +7,7 @@
 //
 
 #import "GZCAlignButton.h"
+#import "UIImage+RenderedImage.h"
 
 @implementation GZCAlignButton
 
@@ -22,7 +23,7 @@
         self.title = @"";
         self.badge = nil;
         self.imageSize = CGSizeZero;
-        self.imageContentMode = UIViewContentModeScaleAspectFit;
+        self.clipsToBounds = YES;
     }
     return self;
 }
@@ -44,6 +45,7 @@
         self.imageView = ({
             UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectZero];
             imageView.clipsToBounds = YES;
+            imageView.contentMode = UIViewContentModeScaleAspectFit;
             [self addSubview:imageView];
             imageView;
         });
@@ -57,7 +59,6 @@
             UILabel * label = [[UILabel alloc]initWithFrame:CGRectZero];
             label.textColor = [UIColor blackColor];
             label.textAlignment = NSTextAlignmentCenter;
-            label.numberOfLines = 2;
             label.font = [UIFont systemFontOfSize:13];
             [self addSubview:label];
             label;
@@ -89,6 +90,16 @@
     _cornerRadius = cornerRadius;
     self.layer.cornerRadius = cornerRadius;
     self.layer.masksToBounds = cornerRadius > 0?true:false;
+}
+
+-(void)setBorderWidth:(CGFloat)borderWidth{
+    _borderWidth = borderWidth;
+    self.layer.borderWidth = borderWidth;
+}
+
+-(void)setBorderColor:(UIColor *)borderColor{
+    _borderColor = borderColor;
+    self.layer.borderColor = borderColor.CGColor;
 }
 
 -(void)setTitle:(NSString *)title{
@@ -131,14 +142,19 @@
     [self getTitleLabel].layer.cornerRadius = imageRadius;
 }
 
--(void)setImageContentMode:(NSInteger)imageContentMode{
+-(void)setImageTintColor:(UIColor *)imageTintColor{
+    _imageTintColor = imageTintColor;
+    [[self getImageView] setImage:[_image imageWithColor:imageTintColor]];
+}
+
+-(void)setImageContentMode:(UIViewContentMode)imageContentMode{
     _imageContentMode = imageContentMode;
     [self getImageView].contentMode = imageContentMode;
 }
 
--(void)setTextAligment:(NSInteger)textAligment{
+-(void)setTextAligment:(GZCAlignButtonAlignment)textAligment{
     _textAligment = textAligment;
-    [self layoutImageAndTitle];
+    [self reloadView];
 }
 
 -(void)setAlignPadding:(CGFloat)alignPadding{
@@ -171,7 +187,7 @@
     [self getBadgeLabel].backgroundColor = badgeBackgroundColor;
 }
 
--(void)setBadgeStyle:(NSInteger)badgeStyle{
+-(void)setBadgeStyle:(GZCAlignButtonBadgeStyle)badgeStyle{
     _badgeStyle = badgeStyle;
 }
 
@@ -239,7 +255,9 @@
             break;
         }
     }
-    _badgeLabel.frame = CGRectMake(badgeX, badgeY, CGRectGetWidth(_badgeLabel.frame), CGRectGetHeight(_badgeLabel.frame));
+    if (_badgeStyle != GZCAlignButtonBadgeStyleRibbon) {
+        _badgeLabel.frame = CGRectMake(badgeX, badgeY, CGRectGetWidth(_badgeLabel.frame), CGRectGetHeight(_badgeLabel.frame));
+    }
 }
 
 -(void)layoutBadgeView{
@@ -259,6 +277,18 @@
             float heigh = CGRectGetHeight(_badgeLabel.frame) > minheight ? CGRectGetHeight(_badgeLabel.frame):minheight;
             _badgeLabel.frame = CGRectMake(0, 0, width, heigh);
             _badgeLabel.layer.cornerRadius = heigh/2;
+            break;
+        }
+        case GZCAlignButtonBadgeStyleRibbon:{
+            _badgeLabel.text = _badge;
+            [_badgeLabel sizeToFit];
+            CGPoint centerPoint = CGPointMake(CGRectGetWidth(self.frame) - CGRectGetWidth(_badgeLabel.frame)/2 - 10, CGRectGetWidth(_badgeLabel.frame)/2 + 10) ;
+            float width = CGRectGetWidth(_badgeLabel.frame) + CGRectGetWidth(self.frame);
+            float heigh = CGRectGetHeight(_badgeLabel.frame);
+            _badgeLabel.frame = CGRectMake(0 , 0, width, heigh);
+            _badgeLabel.center = centerPoint;
+            CGAffineTransform transform = CGAffineTransformMakeRotation(45 * M_PI/180.0);
+            [_badgeLabel setTransform:transform];
             break;
         }
     }

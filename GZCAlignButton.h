@@ -11,7 +11,8 @@
 //角标样式
 typedef NS_ENUM(NSInteger, GZCAlignButtonBadgeStyle) {
     GZCAlignButtonBadgeStylePoint  = 0 ,    // 圆点
-    GZCAlignButtonBadgeStyleString = 1      // 字符串
+    GZCAlignButtonBadgeStyleString = 1 ,    // 字符串气泡
+    GZCAlignButtonBadgeStyleRibbon = 2      // 右侧彩带
 };
 
 //图文混排的样式（图片相对文字的位置）
@@ -29,6 +30,8 @@ IB_DESIGNABLE
 @interface GZCAlignButton : UIControl
 
 @property (nonatomic,assign) IBInspectable CGFloat cornerRadius;   //圆角
+@property (nonatomic,assign) IBInspectable CGFloat borderWidth;   //边框
+@property (nonatomic,copy) IBInspectable UIColor * borderColor;   //边框颜色
 
 @property (nonatomic,strong) UIImageView * imageView;      //图片
 @property (nonatomic,strong) UILabel * titleLabel;      //标题
@@ -43,18 +46,30 @@ IB_DESIGNABLE
 @property (nonatomic,copy) IBInspectable UIColor * imageBackground;  //图片背景色
 @property (nonatomic,assign) IBInspectable CGSize imageSize;  //图片大小
 @property (nonatomic,assign) IBInspectable NSInteger imageRadius;  //图片的圆角
+@property (nonatomic,copy) UIColor *imageTintColor;         //改变图片颜色
 
+#if TARGET_INTERFACE_BUILDER
 /**
  *  图片的填充模式
  *  枚举类型为UIViewContentMode
  **/
-@property (nonatomic,assign) IBInspectable NSInteger imageContentMode;  //
-
+@property (nonatomic,assign) IBInspectable NSInteger imageContentMode;
 /**
  *  排列方式
  *  枚举类型为GZCAlignButtonAlignment
  **/
 @property (nonatomic,assign) IBInspectable NSInteger textAligment;
+/**
+ *  角标样式
+ *  枚举类型为GZCAlignButtonBadgeStyle
+ **/
+@property (nonatomic,assign) IBInspectable NSInteger badgeStyle;
+#else
+@property (nonatomic,assign) UIViewContentMode imageContentMode;
+@property (nonatomic,assign) GZCAlignButtonAlignment textAligment;
+@property (nonatomic,assign) GZCAlignButtonBadgeStyle badgeStyle;
+#endif
+
 
 @property (nonatomic,assign) IBInspectable CGFloat alignPadding;  //图片与文字的间距,GZCAlignButtonAlignmentBelow时无效
 @property (nonatomic,copy) IBInspectable UIColor * shadowColor;  //文字底色,GZCAlignButtonAlignmentBelow才有用
@@ -64,11 +79,6 @@ IB_DESIGNABLE
 @property (nonatomic,assign) IBInspectable CGFloat badgeRadius;     //角标的圆角
 @property (nonatomic,copy) IBInspectable UIColor * badgeBackgroundColor;              //角标背景颜色
 
-/**
- *  角标样式
- *  枚举类型为GZCAlignButtonBadgeStyle
- **/
-@property (nonatomic,assign) IBInspectable NSInteger badgeStyle;
 
 - (void)reloadView;
 
